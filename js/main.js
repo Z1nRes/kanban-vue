@@ -1,15 +1,5 @@
 let eventBus = new Vue()
 
-{/* <div>
-    <form>
-        <div class="form-floating mb-3">
-            <textarea class="form-control" id="textarea" style="height: 200px; resize: none;" v-model="comment"></textarea>
-            <label for="textarea">Введите причину возврата:</label>
-        </div>
-    </form>
-</div> */}
-
-
 Vue.component('note', {
     props: {
         types: ''
@@ -24,7 +14,7 @@ Vue.component('note', {
         <div>
             <div class="m-3" v-for="note in notes" v-show="note.type == types ">
                 <div class="p-3 border" :class="{ 'border-success': note.compliteInTime, 'border-danger': !note.compliteInTime && note.type == 'col-4', 'border-primary': !note.compliteInTime}">
-                    <h5>{{note.title}} ({{note.noteId}}) - <span style="color: red;" @click="deleteNote(note.noteId)">X</span> = {{ note.compliteInTime.length }}</h5>
+                    <h5>{{note.title}} ({{note.noteId}}) - <span style="color: red;" @click="deleteNote(note.noteId)">X</span></h5>
                     <p>{{ note.description }}</p>
                     <p><hr>
                     Дата создания: {{ note.dateCreate }}<br>
@@ -67,19 +57,8 @@ Vue.component('note', {
                 }
             }
         })
-        if (localStorage.getItem('notes')) {
-            try {
-                this.notes = JSON.parse(localStorage.getItem('notes'))
-            } catch(e) {
-                localStorage.removeItem('notes')
-            }
-        }
     },
     methods: {
-        saveNotes() {
-            const parsed = JSON.stringify(this.notes)
-            localStorage.setItem('notes', parsed)
-        },
         deleteNote(id) {
             for (note in this.notes) {
                 if (this.notes[note].noteId == id) {
