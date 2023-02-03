@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban board</title>
+    <script defer src="js/vue.min.js"></script>
+    <script defer src="js/main.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app" class="m-4">
+        <button class="btn btn-dark" @click="modal" >Создать заметку</button>
+        <hr>
+        <div class="row align-items-start">
+            <div class="col" style="height: 90vh;">
+                <h4>Запланированные задачи:</h4>
+                <hr>
+                <note :types="types[0]"></note>
+            </div>
+            <div class="col border-end border-start border-primary" style="height: 90vh;">
+                <h4>Задачи в работе:</h4>
+                <hr>
+                <note :types="types[1]"></note>
+            </div>
+            <div class="col border-end border-primary" style="height: 90vh;">
+                <h4>Тестирование:</h4>
+                <hr>
+                <note :types="types[2]"></note>
+            </div>
+            <div class="col" style="height: 90vh;">
+                <h4>Выполненные задачи:</h4>
+                <hr>
+                <note :types="types[3]"></note>
+            </div>
+        </div>
+        <div class="display" :class="{modal: displayModal}">
+            <div>
+                <create-note id="create-note"></create-note>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+body::-webkit-scrollbar {
+    display: none;
+} /*скрыть скрол но возможность скрола остается*/
+
+.color-white {
+    color: white;
+}
+
+.markPoint {
+    text-decoration: line-through;
+}
+
+.display {
+    display: none;
+}
+
+.modal {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#create-note {
+    width: 800px;
+}
