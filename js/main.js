@@ -14,13 +14,18 @@ Vue.component('note', {
             <div class="m-3 p-3 border border-danger" v-for="note in notes" v-show="note.type == types ">
                 <h5>{{note.title}} ({{note.noteId}}) - <span style="color: red;" @click="deleteNote(note.noteId)">X</span></h5>
                 <p>{{ note.description }}</p>
-                <p>
+                <p><hr>
                 Дата создания: {{ note.dateCreate }}<br>
                 Дэдлайн: {{ note.dateDeadline }}<br>
                 <span v-if="note.dateUpdate.length != 0">Дата изменения: {{ note.dateUpdate }}</span>
                 </p>
-                <div>
-                    <span @click="noteUpdate(note)">Редактировать...</span>
+                <hr>
+                <div v-if="note.type != 'col-4'">
+                    <span class="btn btn-warning" @click="noteUpdate(note)">Редактировать...</span>
+                    <div class="mt-2">
+                        <span class="btn btn-success" @click="changeType(note)">Перенести</span>
+                        <span v-if="note.type == 'col-3'" class="btn btn-danger" @click="comeBack(note)">Вернуть</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -62,6 +67,23 @@ Vue.component('note', {
         },
         noteUpdate(note) {
             eventBus.$emit('update-note', note)
+        },
+        changeType(note) {
+            if (note.type == 'col-1') {
+                note.type = 'col-2'
+            } else {
+                if (note.type == 'col-2') {
+                    note.type = 'col-3'
+                } else {
+                    if (note.type == 'col-3') {
+                        note.type = 'col-4'
+                    }
+                }
+            }
+        },
+        comeBack(note) {
+            
+            note.type = 'col-1'
         }
     }
 })
@@ -95,8 +117,8 @@ Vue.component('create-note', {
                         <input class="mt-3" name="deadline" type="date" min="2023-01-01" v-model="dateDeadline">
                     </div>
                     <input v-if="!update" class="btn btn-primary" type="submit" value="Создать">
-                    <input v-if="update" class="btn btn-primary" @click="updateNote" value="Изменить">
-                    <div class="btn btn-danger ms-4" @click="modal">Закрыть форму</div>
+                    <input v-if="update" class="btn btn-primary" @click="updateNote" @click="modal" value="Изменить">
+                    <div v-if="!update" class="btn btn-danger ms-4" @click="modal">Закрыть форму</div>
                 </fieldset>
             </form>
         </div>
