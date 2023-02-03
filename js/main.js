@@ -206,6 +206,7 @@ Vue.component('create-note', {
                 this.description = null
                 this.dateDeadline = null
                 this.errors = []
+                this.update = false
             } else {
                 this.errors = []
                 if (!this.title) this.errors.push("Введите заголовок!")
