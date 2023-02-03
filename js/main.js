@@ -1,5 +1,15 @@
 let eventBus = new Vue()
 
+{/* <div>
+    <form>
+        <div class="form-floating mb-3">
+            <textarea class="form-control" id="textarea" style="height: 200px; resize: none;" v-model="comment"></textarea>
+            <label for="textarea">Введите причину возврата:</label>
+        </div>
+    </form>
+</div> */}
+
+
 Vue.component('note', {
     props: {
         types: ''
@@ -7,6 +17,7 @@ Vue.component('note', {
     data() {
         return {
             notes: [],
+            comment: ''
         }
     },
     template: `
@@ -18,13 +29,22 @@ Vue.component('note', {
                 Дата создания: {{ note.dateCreate }}<br>
                 Дэдлайн: {{ note.dateDeadline }}<br>
                 <span v-if="note.dateUpdate.length != 0">Дата изменения: {{ note.dateUpdate }}</span>
-                </p>
                 <hr>
+                </p>
+                <p v-if="note.comment.length > 0">Комментарий:<br>{{ note.comment }}</p>
                 <div v-if="note.type != 'col-4'">
                     <span class="btn btn-warning" @click="noteUpdate(note)">Редактировать...</span>
                     <div class="mt-2">
                         <span class="btn btn-success" @click="changeType(note)">Перенести</span>
                         <span v-if="note.type == 'col-3'" class="btn btn-danger" @click="comeBack(note)">Вернуть</span>
+                        <div class="mt-3" v-if="note.type == 'col-3'">
+                            <form>
+                                <div class="form-floating mb-3">
+                                    <textarea class="form-control comeback" id="textarea" style="height: 200px; resize: none;" v-model="comment"></textarea>
+                                    <label for="textarea">Введите причину возврата:</label>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -82,8 +102,11 @@ Vue.component('note', {
             }
         },
         comeBack(note) {
-            
-            note.type = 'col-1'
+            if (this.comment ) {
+                note.comment = this.comment
+                note.type = 'col-1'
+                this.comment = ''
+            }
         }
     }
 })
@@ -134,7 +157,8 @@ Vue.component('create-note', {
                     type: 'col-1',
                     dateCreate: new Date().toLocaleDateString(),
                     dateDeadline: inputDate[2] + '.' + inputDate[1] + '.' + inputDate[0],
-                    dateUpdate: ''
+                    dateUpdate: '',
+                    comment: ''
                 }
                 eventBus.$emit('note-created', note)
                 this.title = null
@@ -158,7 +182,8 @@ Vue.component('create-note', {
                     type: this.note.type,
                     dateCreate: this.note.dateCreate,
                     dateDeadline: inputDate[2] + '.' + inputDate[1] + '.' + inputDate[0],
-                    dateUpdate: new Date().toLocaleDateString()
+                    dateUpdate: new Date().toLocaleDateString(),
+                    comment: this.note.comment
                 }
                 eventBus.$emit('note-updated', updatedNote)
                 this.title = null
