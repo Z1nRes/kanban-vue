@@ -17,33 +17,35 @@ Vue.component('note', {
     data() {
         return {
             notes: [],
-            comment: ''
+            comment: '',
         }
     },
     template: `
         <div>
-            <div class="m-3 p-3 border border-danger" v-for="note in notes" v-show="note.type == types ">
-                <h5>{{note.title}} ({{note.noteId}}) - <span style="color: red;" @click="deleteNote(note.noteId)">X</span></h5>
-                <p>{{ note.description }}</p>
-                <p><hr>
-                Дата создания: {{ note.dateCreate }}<br>
-                Дэдлайн: {{ note.dateDeadline }}<br>
-                <span v-if="note.dateUpdate.length != 0">Дата изменения: {{ note.dateUpdate }}</span>
-                <hr>
-                </p>
-                <p v-if="note.comment.length > 0">Комментарий:<br>{{ note.comment }}</p>
-                <div v-if="note.type != 'col-4'">
-                    <span class="btn btn-warning" @click="noteUpdate(note)">Редактировать...</span>
-                    <div class="mt-2">
-                        <span class="btn btn-success" @click="changeType(note)">Перенести</span>
-                        <span v-if="note.type == 'col-3'" class="btn btn-danger" @click="comeBack(note)">Вернуть</span>
-                        <div class="mt-3" v-if="note.type == 'col-3'">
-                            <form>
-                                <div class="form-floating mb-3">
-                                    <textarea class="form-control comeback" id="textarea" style="height: 200px; resize: none;" v-model="comment"></textarea>
-                                    <label for="textarea">Введите причину возврата:</label>
-                                </div>
-                            </form>
+            <div class="m-3" v-for="note in notes" v-show="note.type == types ">
+                <div class="p-3 border" :class="{ 'border-success': note.compliteInTime, 'border-danger': !note.compliteInTime && note.type == 'col-4', 'border-primary': !note.compliteInTime}">
+                    <h5>{{note.title}} ({{note.noteId}}) - <span style="color: red;" @click="deleteNote(note.noteId)">X</span> = {{ note.compliteInTime.length }}</h5>
+                    <p>{{ note.description }}</p>
+                    <p><hr>
+                    Дата создания: {{ note.dateCreate }}<br>
+                    Дэдлайн: {{ note.dateDeadline }} - {{ note.compliteInTime }}<br>
+                    <span v-if="note.dateUpdate.length != 0">Дата изменения: {{ note.dateUpdate }}</span>
+                    <hr>
+                    </p>
+                    <p v-if="note.comment.length > 0">Комментарий:<br>{{ note.comment }}</p>
+                    <div v-if="note.type != 'col-4'">
+                        <span class="btn btn-warning" @click="noteUpdate(note)">Редактировать...</span>
+                        <div class="mt-2">
+                            <span class="btn btn-success" @click="changeType(note)">Перенести</span>
+                            <span v-if="note.type == 'col-3'" class="btn btn-danger" @click="comeBack(note)">Вернуть</span>
+                            <div class="mt-3" v-if="note.type == 'col-3'">
+                                <form>
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control comeback" id="textarea" style="height: 200px; resize: none;" v-model="comment"></textarea>
+                                        <label for="textarea">Введите причину возврата:</label>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -97,6 +99,16 @@ Vue.component('note', {
                 } else {
                     if (note.type == 'col-3') {
                         note.type = 'col-4'
+                        let dateComplite = new Date().toLocaleDateString().split('.')
+                        let dateDeadline = note.dateDeadline.split('.')
+                        note.dateComplite = dateComplite
+                        if ( Number(dateComplite[2]) >= Number(dateDeadline[2]) ) {
+                            if ( Number(dateComplite[1]) >= Number(dateDeadline[1]) ) {
+                                if ( Number(dateComplite[0]) >= Number(dateDeadline[0]) ) {
+                                    note.compliteInTime = false
+                                } else { note.compliteInTime = true }
+                            } else { note.compliteInTime = true }
+                        } else { note.compliteInTime = true }
                     }
                 }
             }
@@ -158,7 +170,9 @@ Vue.component('create-note', {
                     dateCreate: new Date().toLocaleDateString(),
                     dateDeadline: inputDate[2] + '.' + inputDate[1] + '.' + inputDate[0],
                     dateUpdate: '',
-                    comment: ''
+                    dateComplite: '',
+                    comment: '',
+                    compliteInTime: ''
                 }
                 eventBus.$emit('note-created', note)
                 this.title = null
@@ -183,7 +197,9 @@ Vue.component('create-note', {
                     dateCreate: this.note.dateCreate,
                     dateDeadline: inputDate[2] + '.' + inputDate[1] + '.' + inputDate[0],
                     dateUpdate: new Date().toLocaleDateString(),
-                    comment: this.note.comment
+                    dateComplite: '',
+                    comment: this.note.comment,
+                    compliteInTime: ''
                 }
                 eventBus.$emit('note-updated', updatedNote)
                 this.title = null
