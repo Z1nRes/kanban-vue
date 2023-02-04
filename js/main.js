@@ -95,7 +95,7 @@ Vue.component('note', {
         comeBack(note) {
             if (this.comment ) {
                 note.comment = this.comment
-                note.type = 'col-1'
+                note.type = 'col-2'
                 this.comment = ''
             }
         }
@@ -158,6 +158,7 @@ Vue.component('create-note', {
                 this.description = null
                 this.dateDeadline = null
                 this.errors = []
+                this.modal()
             } else {
                 this.errors = []
                 if (!this.title) this.errors.push("Введите заголовок!")
