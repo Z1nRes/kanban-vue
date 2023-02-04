@@ -13,7 +13,14 @@ Vue.component('note', {
     template: `
         <div>
             <div class="m-3" v-for="note in notes" v-show="note.type == types ">
-                <div class="p-3 border" :class="{ 'border-success': note.compliteInTime, 'border-danger': !note.compliteInTime && note.type == 'col-4', 'border-primary': !note.compliteInTime}">
+                <div 
+                    class="p-3 border card-enter" 
+                    :class="{ 
+                        'border-success': note.compliteInTime, 
+                        'border-danger': !note.compliteInTime && note.type == 'col-4', 
+                        'border-primary': !note.compliteInTime, 'border-warning': note.comment.length != 0,
+                    }"
+                >
                     <h5>{{note.title}} ({{note.noteId}}) - <span style="color: red;" @click="deleteNote(note.noteId)">X</span></h5>
                     <p>{{ note.description }}</p>
                     <p><hr>
